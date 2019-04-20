@@ -140,37 +140,37 @@ func GenerateBNF(addr string) (ebnf []byte, err error) {
 	}
 	// Cascade removal of empty nodes. That is, for any node that has no branches,
 	// remove it and anything it refers to.
-	for {
-		changed := false
-		for name, exprs := range prods {
-			var next [][]yacc.Item
-			for _, expr := range exprs {
-				add := true
-				var items []yacc.Item
-				for _, item := range expr {
-					p := prods[item.Value]
-					if item.Typ == yacc.TypToken && !isUpper(item.Value) && len(p) == 0 {
-						add = false
-						changed = true
-						break
-					}
-					// Remove items that have one branch which accepts nothing.
-					if len(p) == 1 && len(p[0]) == 0 {
-						changed = true
-						continue
-					}
-					items = append(items, item)
-				}
-				if add {
-					next = append(next, items)
-				}
-			}
-			prods[name] = next
-		}
-		if !changed {
-			break
-		}
-	}
+	//for {
+	//	changed := false
+	//	for name, exprs := range prods {
+	//		var next [][]yacc.Item
+	//		for _, expr := range exprs {
+	//			add := true
+	//			var items []yacc.Item
+	//			for _, item := range expr {
+	//				p := prods[item.Value]
+	//				if item.Typ == yacc.TypToken && !isUpper(item.Value) && len(p) == 0 {
+	//					add = false
+	//					changed = true
+	//					break
+	//				}
+	//				// Remove items that have one branch which accepts nothing.
+	//				if len(p) == 1 && len(p[0]) == 0 {
+	//					changed = true
+	//					continue
+	//				}
+	//				items = append(items, item)
+	//			}
+	//			if add {
+	//				next = append(next, items)
+	//			}
+	//		}
+	//		prods[name] = next
+	//	}
+	//	if !changed {
+	//		break
+	//	}
+	//}
 
 	start := true
 	for _, prod := range t.Productions {
