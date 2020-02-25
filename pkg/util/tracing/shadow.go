@@ -22,15 +22,11 @@ package tracing
 
 import (
 	"context"
-	"fmt"
-	"os"
 	"time"
 
 	"github.com/cockroachdb/cockroach/pkg/util"
-	"github.com/cockroachdb/cockroach/pkg/util/timeutil"
 	lightstep "github.com/lightstep/lightstep-tracer-go"
 	opentracing "github.com/opentracing/opentracing-go"
-	zipkin "github.com/openzipkin-contrib/zipkin-go-opentracing"
 )
 
 type shadowTracerManager interface {
@@ -49,7 +45,7 @@ func (lightStepManager) Close(tr opentracing.Tracer) {
 }
 
 type zipkinManager struct {
-	collector zipkin.Collector
+	//collector zipkin.Collector
 }
 
 func (*zipkinManager) Name() string {
@@ -117,29 +113,30 @@ var zipkinLogEveryN = util.Every(5 * time.Second)
 
 func createZipkinTracer(collectorAddr string) (shadowTracerManager, opentracing.Tracer) {
 	// Create our HTTP collector.
-	collector, err := zipkin.NewHTTPCollector(
-		fmt.Sprintf("http://%s/api/v1/spans", collectorAddr),
-		zipkin.HTTPLogger(zipkin.LoggerFunc(func(keyvals ...interface{}) error {
-			if zipkinLogEveryN.ShouldProcess(timeutil.Now()) {
-				// These logs are from the collector (e.g. errors sending data, dropped
-				// traces). We can't use `log` from this package so print them to stderr.
-				toPrint := append([]interface{}{"Zipkin collector"}, keyvals...)
-				fmt.Fprintln(os.Stderr, toPrint)
-			}
-			return nil
-		})),
-	)
-	if err != nil {
-		panic(err)
-	}
-
-	// Create our recorder.
-	recorder := zipkin.NewRecorder(collector, false /* debug */, "0.0.0.0:0", "cockroach")
-
-	// Create our tracer.
-	zipkinTr, err := zipkin.NewTracer(recorder)
-	if err != nil {
-		panic(err)
-	}
-	return &zipkinManager{collector: collector}, zipkinTr
+	//collector, err := zipkin.NewHTTPCollector(
+	//	fmt.Sprintf("http://%s/api/v1/spans", collectorAddr),
+	//	zipkin.HTTPLogger(zipkin.LoggerFunc(func(keyvals ...interface{}) error {
+	//		if zipkinLogEveryN.ShouldProcess(timeutil.Now()) {
+	//			// These logs are from the collector (e.g. errors sending data, dropped
+	//			// traces). We can't use `log` from this package so print them to stderr.
+	//			toPrint := append([]interface{}{"Zipkin collector"}, keyvals...)
+	//			fmt.Fprintln(os.Stderr, toPrint)
+	//		}
+	//		return nil
+	//	})),
+	//)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
+	//// Create our recorder.
+	//recorder := zipkin.NewRecorder(collector, false /* debug */, "0.0.0.0:0", "cockroach")
+	//
+	//// Create our tracer.
+	//zipkinTr, err := zipkin.NewTracer(recorder)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//return &zipkinManager{collector: collector}, zipkinTr
+	return nil, nil
 }
