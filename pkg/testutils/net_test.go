@@ -23,7 +23,7 @@ import (
 	"time"
 
 	"github.com/cockroachdb/cockroach/pkg/util"
-	"github.com/cockroachdb/cockroach/pkg/util/grpcutil"
+	//"github.com/cockroachdb/cockroach/pkg/util/grpcutil"
 	"github.com/cockroachdb/cockroach/pkg/util/leaktest"
 	"github.com/cockroachdb/cockroach/pkg/util/netutil"
 	"github.com/pkg/errors"
@@ -39,10 +39,11 @@ import (
 func RunEchoServer(ln net.Listener, serverSideCh chan<- []byte) error {
 	conn, err := ln.Accept()
 	if err != nil {
-		if grpcutil.IsClosedConnection(err) {
-			return nil
-		}
 		return err
+		//if grpcutil.IsClosedConnection(err) {
+		//	return nil
+		//}
+		//return err
 	}
 	if _, err := copyWithSideChan(conn, conn, serverSideCh); err != nil {
 		return err
